@@ -109,6 +109,15 @@ public class GameManager : MonoBehaviour
     public Button renewButton;
     #endregion
 
+
+    enum GameStatus
+    {
+        PLAYING,
+        DEFEATED,
+        WON,
+        NIL 
+    }
+    GameStatus gameStatus = GameStatus.NIL;
     void Start()
     {
         rng = new System.Random();
@@ -129,7 +138,7 @@ public class GameManager : MonoBehaviour
         renewBoard = RenewBoard.Instance;
         player = PlayerGO.Instance;
         enemy = EnemyGO.Instance;
-        SetBaseHealthAndDamage();
+        SetHealthAndDamage();
         renewBoard.GetBoardChildren();
         fightButton.onClick.AddListener(fightScript.ApplyDammage);
         renewButton.onClick.AddListener(renewBoard.CheckIfBoardCanBeRenewed);
@@ -150,16 +159,19 @@ public class GameManager : MonoBehaviour
     /// <summary>
     /// Se establecen la vida del jugador y del enemigo
     /// </summary>
-    public void SetBaseHealthAndDamage()
+    public void SetHealthAndDamage()
     {
-        enemy.enemyInstance.Health = player.playerInstance.Health = playersHealth; ///Jugador y enemigo empiezan con 50 de vida
+        string health = "Health: ", damage = "Damage: ";
+        if((enemy.enemyInstance.Health <= 0|| player.playerInstance.Health <= 0)) enemy.enemyInstance.Health = player.playerInstance.Health = playersHealth; ///Jugador y enemigo empiezan con 50 de vida
         enemy.enemyInstance.Damage = player.playerInstance.Damage = 0;
 
-        enemy.EnemyDamage.text = "Damage" + enemy.enemyInstance.Damage.ToString();
-        enemy.EnemyHealth.text = "Health: " + enemy.enemyInstance.Health.ToString();
+        ///Se establecen los textos del enemigo
+        enemy.EnemyDamage.text = damage + enemy.enemyInstance.Damage.ToString();
+        enemy.EnemyHealth.text = health + enemy.enemyInstance.Health.ToString();
 
-        player.PlayerHealth.text = "Health: " + player.playerInstance.Health.ToString();
-        player.PlayerDamage.text = "Damage" + player.playerInstance.Damage.ToString();
+        ///Se establecen los textos del jugador
+        player.PlayerHealth.text = health + player.playerInstance.Health.ToString();
+        player.PlayerDamage.text = damage + player.playerInstance.Damage.ToString();
 
     }
 
@@ -171,8 +183,8 @@ public class GameManager : MonoBehaviour
         cardsParentsList = new List<GameObject>(); //Crea una nueva lista de objets
 
         ///Crea un nuevo arreglo de objetos de toda la escena
-        GameObject[] objectArr = FindObjectsOfType(typeof(GameObject)) as GameObject[];
-
+        GameObject[] objectArr = Resources.FindObjectsOfTypeAll<GameObject>() as GameObject[];
+        
         ///Para cada uno de los objetos
         foreach (GameObject gameObject in objectArr)
         {
@@ -297,7 +309,7 @@ public class GameManager : MonoBehaviour
 
     public void Restart()
     {
-        SetBaseHealthAndDamage();
+        SetHealthAndDamage();
         renewBoard.CheckIfBoardCanBeRenewed();
     }
     

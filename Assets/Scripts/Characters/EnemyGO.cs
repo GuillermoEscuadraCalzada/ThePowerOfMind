@@ -70,7 +70,10 @@ public class EnemyGO : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (enemyInstance.Health <= 0)
+        {
+            SetCurrentImage();
+        }
     }
 
 

@@ -52,7 +52,7 @@ public class MemoramaManager
     }
 
     string currentDamageString = "Current DMG: ";
-
+   
     private void Start()
     {
         SetDamagesText();
@@ -100,6 +100,7 @@ public class MemoramaManager
                 Debug.Log("Nice! You found Two Equal Cards!");
                 firstCard.Selected = true;
                 secondCard.Selected = true;
+                
                 PlayerGO.Instance.playerInstance.Damage += firstCard.CardSprite.damage + secondCard.CardSprite.damage; ///Se suma el puntaje de los sprites al daño del jugador
                 PlayerGO.Instance.PlayerDamage.text = currentDamageString + PlayerGO.Instance.playerInstance.Damage; ///Se actualiza el daño del jugador
                 cardsSwaped.Clear();
@@ -111,7 +112,8 @@ public class MemoramaManager
                 Debug.LogError("Sad :( You found Two Different Cards!");
                 firstCard.Selected = secondCard.Selected = false;
                 firstCard.Fading = secondCard.Fading = true;
-                EnemyGO.Instance.enemyInstance.Damage += firstCard.CardSprite.damage + secondCard.CardSprite.damage;
+                Debug.Log("Enemy damage: " + firstCard.CardSprite.damage.ToString() + " +  " + secondCard.CardSprite.damage.ToString() + " = " + (int)((firstCard.CardSprite.damage + secondCard.CardSprite.damage)*0.5f));
+                EnemyGO.Instance.enemyInstance.Damage += (int)((firstCard.CardSprite.damage + secondCard.CardSprite.damage) * 0.5f);
                 EnemyGO.Instance.EnemyDamage.text = currentDamageString + EnemyGO.Instance.enemyInstance.Damage; ///Se actualiza el daño del enemigo
                 cardsSwaped.Clear();
             }

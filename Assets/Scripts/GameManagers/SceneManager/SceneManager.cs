@@ -46,6 +46,11 @@ public class SceneManager : MonoBehaviour
         
     }
 
+
+    /// <summary>
+    /// Muestra la escena deseada
+    /// </summary>
+    /// <param name="sceneTagGO"></param>
     public void ShowScene(SceneTagGO sceneTagGO)
     {
         foreach(Transform child in transform)

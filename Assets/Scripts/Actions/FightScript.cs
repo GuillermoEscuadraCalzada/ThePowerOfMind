@@ -44,10 +44,7 @@ public class FightScript
 
             if (player.playerInstance.Health <= 0) sceneManager.ShowScene(SceneTagGO.DEFEATSCENE);
             else if(enemy.enemyInstance.Health <= 0) sceneManager.ShowScene(SceneTagGO.VICTORYSCENE);
-
-            enemy.enemyInstance.Damage = 0;
-            player.playerInstance.Damage = 0;
-            gameManager.MemoramaManager.SetDamagesText();
+            gameManager.SetHealthAndDamage();
         }
         else
         {
