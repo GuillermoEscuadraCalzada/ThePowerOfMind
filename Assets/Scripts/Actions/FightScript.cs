@@ -17,11 +17,16 @@ public class FightScript
     FightScript()
     {
         gameManager = GameManager.Instance;
+        sceneManager = SceneManager.Instance;
+        enemy = EnemyGO.Instance;
+        player = PlayerGO.Instance;
     }
     #endregion
 
     GameManager gameManager;
-    
+    SceneManager sceneManager;
+    EnemyGO enemy;
+    PlayerGO player;
     /// <summary>
     /// Aplica el daño actual que ambos personajes tengan
     /// </summary>
@@ -29,17 +34,19 @@ public class FightScript
     {
         ///El daño y vida del jugador y enemigo es mayor a cero
         ///Alguno de los dos debe de tener un daño mayor a cero
-        if( (gameManager.Player.Health > 0 && gameManager.Enemy.Health > 0))
+        if( (player.playerInstance.Health > 0 && enemy.enemyInstance.Health > 0))
         {
             Debug.Log("Applying Damage!");
             //Se le aplica el daño al enemigo
-            if(gameManager.Player.Damage > 0 )
-                gameManager.Enemy.Health -= gameManager.Player.Damage;
+            if(player.playerInstance.Damage > 0 ) enemy.enemyInstance.Health -= player.playerInstance.Damage;
             //Se le aplica el daño al enemigo
-            if (gameManager.Enemy.Damage > 0)
-                gameManager.Player.Health -= gameManager.Enemy.Damage;
-            gameManager.Enemy.Damage = 0;
-            gameManager.Player.Damage = 0;
+            if (enemy.enemyInstance.Damage > 0) player.playerInstance.Health -= enemy.enemyInstance.Damage;
+
+            if (player.playerInstance.Health <= 0) sceneManager.ShowScene(SceneTagGO.DEFEATSCENE);
+            else if(enemy.enemyInstance.Health <= 0) sceneManager.ShowScene(SceneTagGO.VICTORYSCENE);
+
+            enemy.enemyInstance.Damage = 0;
+            player.playerInstance.Damage = 0;
             gameManager.MemoramaManager.SetDamagesText();
         }
         else

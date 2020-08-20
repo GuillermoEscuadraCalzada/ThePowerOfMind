@@ -3,14 +3,14 @@ using System.Collections;
 using UnityEngine.UI;
 using UnityEngine;
 
-public class MemoramaManager 
+public class MemoramaManager
 {
     #region Instances
     private static MemoramaManager instance = null;
 
     public static MemoramaManager Instance {
         get {
-            if (instance == null) 
+            if (instance == null)
                 instance = new MemoramaManager();
             return instance;
         }
@@ -18,7 +18,8 @@ public class MemoramaManager
 
     MemoramaManager()
     {
-        Start();
+        gameManager = GameManager.Instance;
+        cardsSwaped = new List<CardScript>();
     }
 
     /// <summary>  Variable del gameManager
@@ -26,7 +27,7 @@ public class MemoramaManager
     GameManager gameManager;
     #endregion
 
-   
+
     List<CardScript> cardsSwaped;
     /// <summary>
     /// Referencia pública de la lista de cartas volteadas
@@ -54,32 +55,31 @@ public class MemoramaManager
 
     private void Start()
     {
-        gameManager = GameManager.Instance;
-        cardsSwaped = new List<CardScript>();
         SetDamagesText();
     }
 
     public void SetDamagesText()
     {
-        gameManager.playerDamageText.text = currentDamageString + gameManager.Player.Damage; ///Se actualiza el daño del jugador
-        gameManager.enemyDamageText.text = currentDamageString + gameManager.Enemy.Damage; ///Se actualiza el daño del jugador
+        PlayerGO.Instance.PlayerDamage.text = currentDamageString + PlayerGO.Instance.playerInstance.Damage; ///Se actualiza el daño del jugador
+        EnemyGO.Instance.EnemyDamage.text = currentDamageString + EnemyGO.Instance.enemyInstance.Damage; ///Se actualiza el daño del jugador
     }
 
-    /// <summary>
-    /// Detecta los toques en pantalla
-    /// </summary>
-    public void DetectImageTouch()
-    {
-        if(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began){
-            Ray raycast = Camera.main.ScreenPointToRay(Input.GetTouch(0).position);
-            RaycastHit raycastHit;
-            if (Physics.Raycast(raycast, out raycastHit) && cardsSwaped.Count < cardLimit)
-            {
-                Debug.Log("Image" + raycastHit.collider.name + "Touched");
-                //cardsSwaped.Add(raycastHit.collider.gameObject);
-            }
-        }
-    }
+    ///// <summary>
+    ///// Detecta los toques en pantalla
+    ///// </summary>
+    //public void DetectImageTouch()
+    //{
+    //    if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
+    //    {
+    //        Ray raycast = Camera.main.ScreenPointToRay(Input.GetTouch(0).position);
+    //        RaycastHit raycastHit;
+    //        if (Physics.Raycast(raycast, out raycastHit) && cardsSwaped.Count < cardLimit)
+    //        {
+    //            Debug.Log("Image" + raycastHit.collider.name + "Touched");
+    //            //cardsSwaped.Add(raycastHit.collider.gameObject);
+    //        }
+    //    }
+    //}
 
 
     public void CheckCurrentCards()
@@ -100,8 +100,8 @@ public class MemoramaManager
                 Debug.Log("Nice! You found Two Equal Cards!");
                 firstCard.Selected = true;
                 secondCard.Selected = true;
-                gameManager.Player.Damage += firstCard.CardSprite.damage + secondCard.CardSprite.damage; ///Se suma el puntaje de los sprites al daño del jugador
-                gameManager.playerDamageText.text = currentDamageString + gameManager.Player.Damage; ///Se actualiza el daño del jugador
+                PlayerGO.Instance.playerInstance.Damage += firstCard.CardSprite.damage + secondCard.CardSprite.damage; ///Se suma el puntaje de los sprites al daño del jugador
+                PlayerGO.Instance.PlayerDamage.text = currentDamageString + PlayerGO.Instance.playerInstance.Damage; ///Se actualiza el daño del jugador
                 cardsSwaped.Clear();
             }
             ///La carta inicial es diferente a la segunda carta
@@ -111,8 +111,8 @@ public class MemoramaManager
                 Debug.LogError("Sad :( You found Two Different Cards!");
                 firstCard.Selected = secondCard.Selected = false;
                 firstCard.Fading = secondCard.Fading = true;
-                gameManager.Enemy.Damage += firstCard.CardSprite.damage + secondCard.CardSprite.damage;
-                gameManager.enemyDamageText.text = currentDamageString + gameManager.Enemy.Damage; ///Se actualiza el daño del enemigo
+                EnemyGO.Instance.enemyInstance.Damage += firstCard.CardSprite.damage + secondCard.CardSprite.damage;
+                EnemyGO.Instance.EnemyDamage.text = currentDamageString + EnemyGO.Instance.enemyInstance.Damage; ///Se actualiza el daño del enemigo
                 cardsSwaped.Clear();
             }
         }

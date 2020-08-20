@@ -2,24 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : MonoBehaviour
+public class Player
 {
     private static Player instance = null;
 
-    private void Awake()
-    {
-        if(instance == null)
-        {
-            instance = this;
-        }
-        else
-        {
-            Destroy(this);
-        }
-    }
+
 
     public static Player Instance {
         get {
+            if (instance == null) instance = new Player();
             return instance;
         }
     }
@@ -60,12 +51,6 @@ public class Player : MonoBehaviour
         set {
             health = value;
         }
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
     }
 
     // Update is called once per frame

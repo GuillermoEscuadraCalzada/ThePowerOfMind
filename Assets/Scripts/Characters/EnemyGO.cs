@@ -2,65 +2,48 @@
 using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
-
-/// <summary>
-/// Clase para los enemigos
-/// </summary>
-public class Enemy : MonoBehaviour
+using TMPro;
+public class EnemyGO : MonoBehaviour
 {
-    private static Enemy instance = null;
-    public static Enemy Instance {
-        get {
-            return instance;
-        }
-    }
+    #region Instances
+    private static EnemyGO instance = null;
     private void Awake()
     {
-        if(instance == null)
+        if (instance == null)
         {
-            instance = this;
+            instance = this;    
         }
         else
         {
             Destroy(this);
         }
     }
-
-    /// <summary>
-    /// Vida del enemigo
-    /// </summary>
-    [Header("Vida del enemigo")]
-    [SerializeField] int health = 0;
-
-    /// <summary>
-    /// Referencia de la vida del jugador
-    /// </summary>
-    public int Health {
+    public static EnemyGO Instance {
         get {
-            return health;
+            
+            return instance;
         }
-        set {
-            health = value;
+    }
+    public Enemy enemyInstance;
+    #endregion
+
+    #region TextMesh
+    [SerializeField] TextMeshProUGUI enemyHealth;
+    [SerializeField] TextMeshProUGUI enemyDamage;
+
+    public TextMeshProUGUI EnemyDamage {
+        get {
+            return enemyDamage;
         }
     }
 
-    /// <summary>
-    /// Daño del enemigo
-    /// </summary>
-    [Header("Daño del enemigo")]
-    [SerializeField] int damage = 0;
-
-    /// <summary>
-    /// Referencia del daño del enemigo
-    /// </summary>
-    public int Damage {
+    public TextMeshProUGUI EnemyHealth {
         get {
-            return damage;
-        }
-        set {
-            damage = value;
+            return enemyHealth;
         }
     }
+    #endregion
+
 
     /// <summary>
     /// Lista de sprites del enemigo
@@ -71,20 +54,25 @@ public class Enemy : MonoBehaviour
     /// Lista temporal de los sprites para reusar imágenes
     /// </summary>
     List<Sprite> temporalSprites;
+  
     System.Random rng;
-    Image img;
-    Enemy()
-    {
-
-    }
+    [SerializeField] Image img;
 
     // Start is called before the first frame update
     void Start()
     {
         rng = new System.Random();
+        enemyInstance = Enemy.Instance;
         LoadEnemyImages();
         SetCurrentImage();
     }
+
+    // Update is called once per frame
+    void Update()
+    {
+        
+    }
+
 
     /// <summary>
     /// Carga los sprites de los enemigos
@@ -93,7 +81,7 @@ public class Enemy : MonoBehaviour
     {
         enemySprites = new List<Sprite>(); ///Se crea una nueva lista 
         Sprite[] spritesArr = Resources.LoadAll<Sprite>("Enemies"); ///Se cargan todos los sprites de la carpeta Enemies
-        if(spritesArr != null) ///Si es diferente de nulo, es que sí existe
+        if (spritesArr != null) ///Si es diferente de nulo, es que sí existe
         {
             ///Por cada uno de los sprites
             foreach (Sprite sprite in spritesArr)
@@ -102,18 +90,16 @@ public class Enemy : MonoBehaviour
             }
         }
     }
-   
+
     /// <summary>
     /// Establece la nueva imagen del enemigo
     /// </summary>
     void SetCurrentImage()
     {
         ///La lista es nula o su contenido es mayor o igual a cero
-        if(temporalSprites == null || temporalSprites.Count <= 0)
+        if (temporalSprites == null || temporalSprites.Count <= 0)
             temporalSprites = new List<Sprite>(enemySprites);
-        img = GetComponent<Image>(); ///Obten el componente de la imagen
-        if(img == null) ///Si es nula agregale el componente
-
+        if (img == null) ///Si es nula agregale el componente
         {
             gameObject.AddComponent<Image>();
         }
@@ -123,10 +109,10 @@ public class Enemy : MonoBehaviour
         temporalSprites.RemoveAt(index); ///Quita la imagen del enemigo de la lista
 
     }
-
-    // Update is called once per frame
-    void Update()
+    
+    public void UpdateHealthText()
     {
-        
+        enemyHealth.text = "Health: " + enemyInstance.Health.ToString();
     }
+
 }

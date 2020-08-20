@@ -42,11 +42,11 @@ public class GameManager : MonoBehaviour
     /// <summary>
     /// Referencia al jugador
     /// </summary>
-    Player player;
+    PlayerGO player;
     /// <summary>
     /// Getter y setter del jugador
     /// </summary>
-    public Player Player {
+    public PlayerGO Player {
         get {
             return player;
         }
@@ -55,12 +55,12 @@ public class GameManager : MonoBehaviour
     /// <summary>
     /// Referencia al enemigo
     /// </summary>
-    Enemy enemy;
+    EnemyGO enemy;
 
     /// <summary>
     /// Getter y setter del enemigo
     /// </summary>
-    public Enemy Enemy {
+    public EnemyGO Enemy {
         get {
             return enemy;
         }
@@ -72,6 +72,7 @@ public class GameManager : MonoBehaviour
             return fightScript;
         }
     }
+   
     RenewBoard renewBoard;
     public RenewBoard RenewBoard {
         get {
@@ -80,6 +81,7 @@ public class GameManager : MonoBehaviour
     }
     #endregion
 
+    #region contenedores
     // Start is called before the first frame update
     [SerializeField] List<GameObject> cardsParentsList;
     public List<GameObject> CardsParentsList {
@@ -96,24 +98,17 @@ public class GameManager : MonoBehaviour
     /// Arreglo de daños
     /// </summary>
     int[] damageArray = new int[8] { 1, 2, 3, 4, 5, 6, 7, 8 };
-    System.Random rng;
-
-    #region TextMesh
-    ///<summary>
-    /// Texto donde va el daño del jugador
-    /// </summary>
-    [Header("Textos de daño")]
-    public TextMeshProUGUI playerDamageText;
-
-    ///<summary>
-    /// Texto donde va el daño del enemigo
-    /// </summary>
-    public TextMeshProUGUI enemyDamageText;
     #endregion
 
+    [SerializeField] private int playersHealth = 50;
+    System.Random rng;
+
+    #region botones
     [Header("Buttons")]
     public Button fightButton;
     public Button renewButton;
+    #endregion
+
     void Start()
     {
         rng = new System.Random();
@@ -124,33 +119,47 @@ public class GameManager : MonoBehaviour
         SetRandomSprites();
     }
 
+    /// <summary>
+    /// Se obtienen todas las instancias del juego
+    /// </summary>
     private void GetInstances()
     {
-        gameObject.AddComponent<Player>();
-        player = Player.Instance;
-        enemy = Enemy.Instance;
         memoramaManager = MemoramaManager.Instance;
         fightScript = FightScript.Instance;
         renewBoard = RenewBoard.Instance;
+        player = PlayerGO.Instance;
+        enemy = EnemyGO.Instance;
+        SetBaseHealthAndDamage();
         renewBoard.GetBoardChildren();
         fightButton.onClick.AddListener(fightScript.ApplyDammage);
-        renewButton.onClick.AddListener(renewBoard.RemakeBoard);
+        renewButton.onClick.AddListener(renewBoard.CheckIfBoardCanBeRenewed);
 
     }
 
     // Update is called once per frame
     void Update()
     {
-        memoramaManager.CheckCurrentCards();
-        renewBoard.Update();
+        if(SceneManager.Instance.CurrentScene == SceneTagGO.GAMESCENE)
+        {
+            memoramaManager.CheckCurrentCards();
+            renewBoard.Update();
+        }
     }
 
 
     /// <summary>
     /// Se establecen la vida del jugador y del enemigo
     /// </summary>
-    void SetHealth()
+    public void SetBaseHealthAndDamage()
     {
+        enemy.enemyInstance.Health = player.playerInstance.Health = playersHealth; ///Jugador y enemigo empiezan con 50 de vida
+        enemy.enemyInstance.Damage = player.playerInstance.Damage = 0;
+
+        enemy.EnemyDamage.text = "Damage" + enemy.enemyInstance.Damage.ToString();
+        enemy.EnemyHealth.text = "Health: " + enemy.enemyInstance.Health.ToString();
+
+        player.PlayerHealth.text = "Health: " + player.playerInstance.Health.ToString();
+        player.PlayerDamage.text = "Damage" + player.playerInstance.Damage.ToString();
 
     }
 
@@ -284,6 +293,12 @@ public class GameManager : MonoBehaviour
         spriteDictionary.Add(spriteToFind, 0); ///Al no encontrarse dentro del diccionario, se añade
         return spriteDictionary[spriteToFind]; ///Se regresa su valor actual
 
+    }
+
+    public void Restart()
+    {
+        SetBaseHealthAndDamage();
+        renewBoard.CheckIfBoardCanBeRenewed();
     }
     
 }

@@ -36,8 +36,15 @@ public class RenewBoard
 
     public void Update()
     {
+        RenewBoardMethod();
+    }
+
+    private void RenewBoardMethod()
+    {
         if (checkingCards)
         {
+            Debug.LogError("Renewing Cards!");
+
             foreach (GameObject child in children)
             {
                 cardScript = child.GetComponent<CardScript>();
@@ -58,10 +65,13 @@ public class RenewBoard
             }
         }
     }
-    
-    public void RemakeBoard()
+
+    /// <summary>
+    /// Se verifica que el tablero puede renovarse
+    /// </summary>
+    public void CheckIfBoardCanBeRenewed()
     {
-        if(checkingCards != true)
+        if(checkingCards != true && gameManager.MemoramaManager.CardsSwaped.Count <= 0)
         {
             foreach (GameObject parent in gameManager.CardsParentsList)
             {
@@ -83,6 +93,9 @@ public class RenewBoard
                 }
             }
             checkingCards = true;
+        }else
+        {
+            Debug.LogError("Can't renew cards!");
         }
     }
 
