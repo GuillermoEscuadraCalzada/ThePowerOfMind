@@ -97,10 +97,15 @@ public class GameManager : MonoBehaviour
     /// <summary>
     /// Arreglo de daños
     /// </summary>
-    int[] damageArray = new int[8] { 1, 2, 3, 4, 5, 6, 7, 8 };
+    int[] damageArray = new int[8] { 1, 2, 3, 4,5, 6,7,8 };
     #endregion
 
     [SerializeField] private int playersHealth = 50;
+    public int PlayersHealth {
+        get {
+            return playersHealth;
+        }
+    }
     System.Random rng;
 
     #region botones
@@ -117,7 +122,6 @@ public class GameManager : MonoBehaviour
         WON,
         NIL 
     }
-    GameStatus gameStatus = GameStatus.NIL;
     void Start()
     {
         rng = new System.Random();
@@ -232,13 +236,16 @@ public class GameManager : MonoBehaviour
                                                       ///Busca todos los componentes en la carpeta Resources/Sprites y los guarda en un arreglo
         Sprite[] spritesArr = Resources.LoadAll<Sprite>("Sprites");
         List<int> dmg = new List<int>(damageArray);
+        int randNumb = 0;
         if (spritesArr != null)
         {
             ///Itera por el arreglo y añádelo a la lista de sprites
             foreach (Sprite sprite in spritesArr)
             {
-                spritesScriptList.Add(new SpriteScript(sprite, dmg[0]));
-                dmg.RemoveAt(0);
+                if(dmg.Count <= 0) dmg = new List<int>(damageArray);
+                randNumb = rng.Next(0, dmg.Count);
+                spritesScriptList.Add(new SpriteScript(sprite, dmg[randNumb]));
+                dmg.RemoveAt(randNumb);
             }
         }
     }

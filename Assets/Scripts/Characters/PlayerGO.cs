@@ -36,6 +36,7 @@ public class PlayerGO : MonoBehaviour
     {
         if(instance == null)
         {
+            playerInstance = Player.Instance;
             instance = this;
         }
         else
@@ -45,7 +46,7 @@ public class PlayerGO : MonoBehaviour
     }
     void Start()
     {
-        playerInstance = Player.Instance;
+        
     }
 
     // Update is called once per frame

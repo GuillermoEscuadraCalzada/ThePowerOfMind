@@ -66,7 +66,7 @@ public class CardScript : MonoBehaviour
 
     }
     float fade = 1f;
-    float difference = 1f;
+    float difference = 2f;
 
 
     bool fading = false;

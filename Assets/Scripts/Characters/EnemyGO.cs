@@ -11,6 +11,7 @@ public class EnemyGO : MonoBehaviour
     {
         if (instance == null)
         {
+            enemyInstance = Enemy.Instance;
             instance = this;    
         }
         else
@@ -62,7 +63,7 @@ public class EnemyGO : MonoBehaviour
     void Start()
     {
         rng = new System.Random();
-        enemyInstance = Enemy.Instance;
+        
         LoadEnemyImages();
         SetCurrentImage();
     }
@@ -70,10 +71,7 @@ public class EnemyGO : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (enemyInstance.Health <= 0)
-        {
-            SetCurrentImage();
-        }
+        
     }
 
 
@@ -97,7 +95,7 @@ public class EnemyGO : MonoBehaviour
     /// <summary>
     /// Establece la nueva imagen del enemigo
     /// </summary>
-    void SetCurrentImage()
+    public void SetCurrentImage()
     {
         ///La lista es nula o su contenido es mayor o igual a cero
         if (temporalSprites == null || temporalSprites.Count <= 0)
